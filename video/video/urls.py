@@ -27,8 +27,13 @@ urlpatterns = [
     path('signup/', views.SignUp.as_view(), name='signup'),
     path('login/', auth_views.LoginView.as_view(), name='login'),
     path('logout/', auth_views.LogoutView.as_view(), name='logout'),
+    path('dashboard/', views.dashboard, name='dashboard'),
+
     #Category
     path('category/create/', views.CreateCategory.as_view(), name='create_category'),
-]
+    path('category/detail/<int:pk>', views.DetailCategory.as_view(), name='detail_category'),
+#     path('category/update/<int:id>', views.UpdateCategory.as_view(), name='update_category'),
+#     path('category/delete/<int:id>', views.DeleteCategory.as_view(), name='delete_category'),
+ ]
 
 urlpatterns += static(settings.STATIC_URL, document_root = settings.STATIC_ROOT)
