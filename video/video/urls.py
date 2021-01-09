@@ -32,8 +32,9 @@ urlpatterns = [
     #Category
     path('category/create/', views.CreateCategory.as_view(), name='create_category'),
     path('category/detail/<int:pk>', views.DetailCategory.as_view(), name='detail_category'),
-#     path('category/update/<int:id>', views.UpdateCategory.as_view(), name='update_category'),
-#     path('category/delete/<int:id>', views.DeleteCategory.as_view(), name='delete_category'),
+    path('category/update/<int:pk>', views.UpdateCategory.as_view(), name='update_category'),
+    path('category/delete/<int:pk>', views.DeleteCategory.as_view(), name='delete_category'),
+    path('category/addvideo/<int:pk>', views.add_video, name='add_video'),
  ]
 
 urlpatterns += static(settings.STATIC_URL, document_root = settings.STATIC_ROOT)
