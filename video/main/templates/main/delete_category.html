@@ -1,0 +1,15 @@
+{% extends 'main/base.html' %}
+
+{% block content %}
+<div class="container"> 
+    <h2>Are you sure you want to delete?</h2>
+    <form action="" method="POST">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <h2><a href="{% url 'detail_category' category.id %}">{{ category.title }}</a></h2>
+        <button type="submit" class="btn btn-danger">Delete</button>
+    </form>
+    <br>
+    
+</div>
+{% endblock %}
