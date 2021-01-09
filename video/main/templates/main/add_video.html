@@ -2,7 +2,8 @@
 
 {% block content %}
 <div class="container"> 
-    <h2>Add Video</h2>
+    <h2>Add Video to {{ category.title }}</h2>
+    <hr>
     <form action="" method="POST">
         {% csrf_token %}
         {% load widget_tweaks %}
@@ -14,12 +15,53 @@
             {% render_field field class='form-control' %}
         </div>
         {% endfor %}
+        <br>
         <button type="submit" class="btn btn-primary">Add</button>
     </form>
-
+    <br>
     <h2>Search</h2>
     <form action="">
-        {{search_form}}
+        {% for field in search_form %}
+        <div class="form-group">
+            {{ field.errors }}
+            {{ field.label_tag }}
+            {% render_field field class='form-control' %}
+        </div>
+        {% endfor %}
     </form>
+
+    <div id="search_results">
+        <script>
+            let delayTimer;
+            $('#id_search_term').keyup(function() {
+                clearTimeout(delayTimer);
+                $('#search_results').text('Loading...');
+                delayTimer = setTimeout(function() {
+                    let text = $('#id_search_term').val();
+                    $.ajax({
+                        url:'/video/search',
+                        data: {
+                            'search_term': text
+                        },
+                        dataType: 'json',
+                        success: function(data) {
+                            let results = '';
+                            $('#search_results').text('');
+
+                            results += '<div> class="row"';
+                            
+                            data['items'].forEach(function(video) {
+                                results += video['snippet']['title']
+                            });
+                            
+                            results += '</div>';
+
+                            $('#search_results').append(results);
+                        }
+                    });
+                }, 1000);
+            });
+        </script>
+    </div>
 </div>
 {% endblock %}
