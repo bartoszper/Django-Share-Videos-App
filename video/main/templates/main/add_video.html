@@ -4,7 +4,7 @@
 <div class="container"> 
     <h2>Add Video to {{ category.title }}</h2>
     <hr>
-    <form action="" method="POST">
+    <form action="" method="POST" id='submit_video'>
         {% csrf_token %}
         {% load widget_tweaks %}
 
@@ -48,19 +48,28 @@
                             let results = '';
                             $('#search_results').text('');
 
-                            results += '<div> class="row"';
+                            results += '<div class="row">';
                             
                             data['items'].forEach(function(video) {
-                                results += video['snippet']['title']
+                                results += '<div class="col-md-4 mt-3"><div class="card mb-4 shadow-sm">';
+                                  results += '<iframe width="100%" height="225" src="https://www.youtube.com/embed/'+ video['id']['videoId']+'" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>';
+                                results += '<div class="card-body"><p class="card-text">'+ video['snippet']['title'] + '</p>';
+                                results += '<a href="#" class="btn btn-primary" onclick="addVideo(\'' + video['id']['videoId'] + '\')">Add</a></div></div></div>';
+                                
                             });
-                            
+
                             results += '</div>';
 
                             $('#search_results').append(results);
                         }
                     });
-                }, 1000);
+                }, 700);
             });
+
+            function addVideo(video_id) {
+                $('#id_url').val('https://www.youtube.com/watch?v='+ video_id);
+                $('#submit_video').submit();
+            }
         </script>
     </div>
 </div>
