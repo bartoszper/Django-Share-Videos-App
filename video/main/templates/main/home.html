@@ -3,7 +3,7 @@
 {% block content %}
 <section class="jumbotron text-center">
     <div class="container">
-        <h1>What's your favourite category of YouTube Video's?</h1>
+        <h1>What's your favourite category Video's?</h1>
         <p class="lead text-muted">You what they are. They're your go to videos. You have a top 10 list and it's time to share them with the world. Click the button to get started!</p>
         <p>
             <a href="{% url 'create_category' %}" class="btn btn-primary">Create Your Video's List To Share!</a>
@@ -11,4 +11,30 @@
     </div>
 
 </section>
+<div class="container">
+    <h1 class="text-center">Popular Videos</h1>
+
+    {% for cat in popular_category %}
+
+    <h2><a href="{% url 'detail_category' cat.id %}">{{ cat.title }}</a></h2>
+        <div class="row">
+
+            {% for video in cat.video_set.all %}
+
+            <div class="col-md-4 mt-3">
+                <div class="card mb-4 shadow-sm">
+                     <iframe width="100%" height="225" src="https://www.youtube.com/embed/{{ video.youtube_id }}" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen>
+                     </iframe>
+                     <div class="card-body">
+                         <p class="card-text">{{ video.title }}</p>
+                     </div>
+                 </div>
+             </div>
+            {% endfor %}
+
+        </div>
+    {% endfor %}
+</div>
+
+
 {% endblock %}
