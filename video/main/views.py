@@ -10,6 +10,8 @@ from django.http import Http404, JsonResponse
 import urllib
 import requests
 from django.forms.utils import ErrorList
+from django.contrib.auth.decorators import login_required
+from django.contrib.auth.mixins import LoginRequiredMixin
 
 
 YOUTUBE_API_KEY = 'AIzaSyCDyT72BRCnDYxvxjJISkQKsj1pCml3GH0'
@@ -18,17 +20,20 @@ YOUTUBE_API_KEY = 'AIzaSyCDyT72BRCnDYxvxjJISkQKsj1pCml3GH0'
 def home(request):
     recent_category = Category.objects.all().order_by('-id')[:3]
     popular_category = [
+        Category.objects.get(pk=1),
         Category.objects.get(pk=2),
         Category.objects.get(pk=3),
-        Category.objects.get(pk=6),
     ]   
 
     return render(request, 'main/home.html', {'recent_category': recent_category,'popular_category':popular_category})
 
+@login_required
 def dashboard(request):
     category = Category.objects.filter(user=request.user)
     return render(request, 'main/dashboard.html',{'category':category})
 
+
+@login_required
 def video_search(request):
     search_form = SearchForm(request.GET)
     if search_form.is_valid(): 
@@ -51,7 +56,7 @@ class SignUp(generic.CreateView):
         login(self.request, user)
         return view
 
-class CreateCategory(generic.CreateView):
+class CreateCategory(LoginRequiredMixin, generic.CreateView):
     model = Category
     fields = ['title']
     template_name = 'main/create_category.html'
@@ -66,24 +71,42 @@ class DetailCategory(generic.DetailView):
     model = Category
     template_name = 'main/detail_category.html'
 
-
-class UpdateCategory(generic.UpdateView):
+   
+class UpdateCategory(LoginRequiredMixin, generic.UpdateView):
     model = Category
     template_name = 'main/update_category.html'
     fields = ['title']
     success_url = reverse_lazy('dashboard')
 
-class DeleteCategory(generic.DeleteView):
+    def get_object(self):
+        category = super(UpdateCategory, self).get_object()
+        if not category.user == self.request.user:
+            raise Http404
+        return category
+
+class DeleteCategory(LoginRequiredMixin, generic.DeleteView):
     model = Category
     template_name = 'main/delete_category.html'
     success_url = reverse_lazy('dashboard')
 
-class DeleteVideo(generic.DeleteView):
+    def get_object(self):
+        category = super(DeleteCategory, self).get_object()
+        if not category.user == self.request.user:
+            raise Http404
+        return category
+
+class DeleteVideo(LoginRequiredMixin, generic.DeleteView):
     model = Video
     template_name = 'main/delete_video.html'
     success_url = reverse_lazy('dashboard')
 
+    def get_object(self):
+        video = super(DeleteVideo, self).get_object()
+        if not video.category.user == self.request.user:
+            raise Http404
+        return video
 
+@login_required
 def add_video(request, pk):
     
     form = VideoForm()
