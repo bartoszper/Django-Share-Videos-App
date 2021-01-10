@@ -19,7 +19,8 @@ def home(request):
     return render(request, 'main/home.html', {})
 
 def dashboard(request):
-    return render(request, 'main/dashboard.html')
+    category = Category.objects.filter(user=request.user)
+    return render(request, 'main/dashboard.html',{'category':category})
 
 def video_search(request):
     search_form = SearchForm(request.GET)
@@ -52,7 +53,7 @@ class CreateCategory(generic.CreateView):
     def form_valid(self, form):
         form.instance.user = self.request.user
         super(CreateCategory, self).form_valid(form)
-        return redirect('home')
+        return redirect('dashboard')
 
 class DetailCategory(generic.DetailView):
     model = Category
@@ -74,6 +75,7 @@ class DeleteVideo(generic.DeleteView):
     model = Video
     template_name = 'main/delete_video.html'
     success_url = reverse_lazy('dashboard')
+
 
 def add_video(request, pk):
     
