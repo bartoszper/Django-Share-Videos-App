@@ -1,5 +1,14 @@
 {% extends 'main/base.html' %}
 
 {% block content %}
-<h1>hello!</h1>
+<section class="jumbotron text-center">
+    <div class="container">
+        <h1>What's your favourite category of YouTube Video's?</h1>
+        <p class="lead text-muted">You what they are. They're your go to videos. You have a top 10 list and it's time to share them with the world. Click the button to get started!</p>
+        <p>
+            <a href="{% url 'create_category' %}" class="btn btn-primary">Create Your Video's List To Share!</a>
+        </p>
+    </div>
+
+</section>
 {% endblock %}
