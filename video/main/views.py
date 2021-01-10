@@ -16,7 +16,14 @@ YOUTUBE_API_KEY = 'AIzaSyCDyT72BRCnDYxvxjJISkQKsj1pCml3GH0'
 
 # Create your views here.
 def home(request):
-    return render(request, 'main/home.html', {})
+    recent_category = Category.objects.all().order_by('-id')[:3]
+    popular_category = [
+        Category.objects.get(pk=2),
+        Category.objects.get(pk=3),
+        Category.objects.get(pk=6),
+    ]   
+
+    return render(request, 'main/home.html', {'recent_category': recent_category,'popular_category':popular_category})
 
 def dashboard(request):
     category = Category.objects.filter(user=request.user)
